@@ -155,9 +155,11 @@ int main(void) {
 	double distanceIn = 0;
 	while(1) {
 		// [TODO] Store your measurements on Stack
-		if ((150 <= timeInterval) && (timeInterval <= 25000)) {
+		if ((150 <= timeInterval) && (timeInterval <= 1480)) {
+			// max pulse 25ms -> ~168 inches. limit to 1480 -> ~10 inches
 			distanceCm = timeInterval / 58;
 			distanceIn = timeInterval / 148;
+			// possible idea: only send bluetooth signal if this condition is satisfied (to avoid junk data sent)
 		} else {
 			// object out of range
 			distanceCm = 0;
