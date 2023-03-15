@@ -20,6 +20,14 @@ def main():
 
     # get devices
     devices = lifx.get_lights()
+    bulb = devices[0]
+
+    while True:
+        # polling to check for bluetooth signal
+
+        # brightness in range [0-65535], duration in ms, rapid = 1 ->
+        bulb.set_brightness() # (brightness, [duration], [rapid])
+        bulb.set_colortemp(kelvin, [duration], [rapid]) # kelvin in range [2500-9000]
     labels = []
     for device in devices:
         labels.append(device.get_label())
