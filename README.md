@@ -2,7 +2,7 @@
 
 ## Installing dependencies
 
-Our lightbulb uses the [LIFX LAN Protocol](https://lan.developer.lifx.com/). We use the **lifxlan** Python 3 module to locally control our light bulb over LAN.
+Our lightbulb uses the [LIFX LAN Protocol](https://lan.developer.lifx.com/). We use the [**lifxlan**](https://github.com/mclarkk/lifxlan) Python 3 module to locally control our light bulb over LAN.
 
 To install the module:
 
