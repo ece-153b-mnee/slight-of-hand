@@ -14,8 +14,8 @@ Description:			This is an STM32 device driver library for the ILI9341 SPI LCD di
 */
 
 //Header files
-#include "MY_ILI9341.h"
-#include "SPI.h"
+#include "MY_ILI9341_template.h"
+#include "SPI_template.h"
 static uint8_t rotationNum=1;
 static bool _cp437    = false;
 static SPI_TypeDef* lcdSPIhandle;
