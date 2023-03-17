@@ -299,13 +299,18 @@ void ILI9341_SendCommand(uint8_t com)
 {
 	//*(__IO uint8_t *)(0x60000000) = com;
 	uint8_t tmpCmd = com;
-	//Set DC LOW for COMMAND mode
+	//Set DC LOW for COMMAND mode, gpiob
+	// pb3-5, pa5-7
+	SPI1->CR1 &= ~(SPI_CR1_BIDIMODE);
 
 	//Put CS LOW
+	GPIOB->ODR &= ~(GPIO_ODR_OD4);
 	
 	//Write command byte using SPI
-
+	SPI_Write()
 	//Bring CS HIGH
+	GPIOB->ODR |= (GPIO_ODR_OD4);
+
 }
 
 //2. Write data to LCD
@@ -314,27 +319,31 @@ void ILI9341_SendData(uint8_t data)
 	//*(__IO uint8_t *)(0x60040000) = data;
 	uint8_t tmpCmd = data;
 	//Set DC HIGH for DATA mode
-
+	SPI1->CR1 |= SPI_CR1_BIDIMODE;
 	//Put CS LOW
-
+	GPIOB->ODR &= ~(GPIO_ODR_OD4);
 	//Write data using SPI
 
 	//Bring CS HIGH
+	GPIOB->ODR |= (GPIO_ODR_OD4);
 
 }
 //2.2 Write multiple/DMA
 void ILI9341_SendData_Multi(uint16_t Colordata, uint32_t size)
 {
 	uint8_t colorL,colorH;
-	//Set DC HIGH for DATA mode
+	//Set DC HIGH for DATA mode B5
+	SPI1->CR1 |= SPI_CR1_BIDIMODE;
 
 	//Put CS LOW
+	GPIOB->ODR &= ~(GPIO_ODR_OD4);
 
 	//Write data using SPI
-
+	
 	//Wait for end of DMA transfer
 
 	//Bring CS HIGH
+	GPIOB->ODR |= (GPIO_ODR_OD4);
 
 }
 
@@ -360,17 +369,21 @@ void ILI9341_SetCursorPosition(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y
 //4. Initialise function
 void ILI9341_Init(SPI_TypeDef *spiLcdHandle, GPIO_TypeDef *csPORT, uint16_t csPIN, GPIO_TypeDef *dcPORT, uint16_t dcPIN, GPIO_TypeDef *resetPORT, uint16_t resetPIN)
  {
-	 //Copy SPI pointer
-
-	 //set CS pin variable (look at global variables at the top of the file)
-
-	 //set DC pin variable
-
-	 //set RESET pin variable
+	//Copy SPI pointer
+	memcpy(&lcdSPIhandle, spiLcdHandle, sizeof(*spiLcdHandle));	
+	//set CS pin variable (look at global variables at the top of the file)
+	tftCS_GPIO = csPORT;
+	tftCS_PIN = csPIN;
+	//set DC pin variable
+	tftDC_GPIO = dcPORT;
+	tftDC_PIN = dcPIN;
+	//  HAL_GPIO_WritePin(tftCS_GPIO, tftCS_PIN, GPIO_PIN_SET);
+	//set RESET pin variable
+	tftRESET_GPIO = resetPORT;
+	tftRESET_PIN = resetPIN;
+	//clear the mode register bits
 	 
-	 //clear the mode register bits
-	 
-	 //set pins to output mode
+	//set pins to output mode
 	 
 	
 
