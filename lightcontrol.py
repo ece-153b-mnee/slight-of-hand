@@ -1,7 +1,7 @@
 # coding=utf-8
 import sys
-
 from lifxlan import LifxLAN
+import serial
 
 def main():
     num_lights = None
