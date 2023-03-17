@@ -151,7 +151,10 @@ void Init_USARTx(int x) {
 	}
 }
 
-int main(void) {	
+int main(void) {
+	// from uart lab -> 80 mhz
+	System_Clock_Init();
+	
 	// Enable High Speed Internal Clock (HSI = 16 MHz)
 	RCC->CR |= RCC_CR_HSION;
 	while ((RCC->CR & RCC_CR_HSIRDY) == 0); // Wait until HSI is ready
@@ -161,11 +164,10 @@ int main(void) {
 	RCC->CFGR |= RCC_CFGR_SW_HSI;
 	while ((RCC->CFGR & RCC_CFGR_SWS) == 0); // Wait until HSI is system clock source
 
-	// from uart lab
-	// System_Clock_Init();
+
 
 	// Initalize UART -- using USART1
-	// Init_USARTx(1);
+	Init_USARTx(1);
 
 	// Input Capture Setup
 	Input_Capture_Setup();
@@ -173,8 +175,8 @@ int main(void) {
 	// Trigger Setup
 	Trigger_Setup();
 
-	double distanceCm = 0;
-	double distanceIn = 0;
+	uint32_t distanceCm = 0;
+	uint32_t distanceIn = 0;
 	while(1) {
 		// [TODO] Store your measurements on Stack
 		if ((150 <= timeInterval) && (timeInterval <= 1480)) {
@@ -182,12 +184,12 @@ int main(void) {
 			distanceCm = timeInterval / 58;
 			distanceIn = timeInterval / 148;
 			// possible idea: only send bluetooth signal if this condition is satisfied (to avoid junk data sent)
-			// printf("Current Distance: %32d inches\n", distanceIn);
+			printf("%32u\n", distanceIn);
 		} else {
 			// object out of range
 			distanceCm = 0;
 			distanceIn = 0;
 		}
-
+				// printf("Test message\n");
 	}
 }
