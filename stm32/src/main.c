@@ -17,70 +17,70 @@ uint32_t volatile overflowCount = 0;
 uint32_t volatile timeInterval = 0;
 
 void Input_Capture_Setup() {
-	// Echo connected to PB6
+	// Echo connected to PA0
 
-	// Enable GPIO Port B Clock
-	RCC->AHB2ENR |= RCC_AHB2ENR_GPIOBEN;
+	// Enable GPIO Port A Clock
+	RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
 
 	// PB6 to Alternative Function Mode
-	GPIOB->MODER &= ~(3UL<<12);
-	GPIOB->MODER |= (2UL<<12);
-	GPIOB->AFR[0] &= ~(GPIO_AFRL_AFSEL6);
-	GPIOB->AFR[0] |= (GPIO_AFRL_AFSEL6_1); // Alternative function TIM4_CH1
-	GPIOB->PUPDR &= ~(3UL<<12); // No PUPD
+	GPIOA->MODER &= ~(3UL);
+	GPIOA->MODER |= (2UL);
+	GPIOA->AFR[0] &= ~(GPIO_AFRL_AFSEL0);
+	GPIOA->AFR[0] |= (GPIO_AFRL_AFSEL0_1); // Alternative function TIM5_CH1
+	GPIOA->PUPDR &= ~(3UL); // No PUPD
 	
 
-	// Enable timer 4
-	RCC->APB1ENR1 |= RCC_APB1ENR1_TIM4EN;
+	// Enable timer 5
+	RCC->APB1ENR1 |= RCC_APB1ENR1_TIM5EN;
 
 	// Timer set-up
-	TIM4->PSC = 15; // Prescaler value
-	TIM4->CR1 |= TIM_CR1_ARPE; // enable auto-reload preload
-	TIM4->ARR |= TIM_ARR_ARR; // max value
+	TIM5->PSC = 15; // Prescaler value
+	TIM5->CR1 |= TIM_CR1_ARPE; // enable auto-reload preload
+	TIM5->ARR |= TIM_ARR_ARR; // max value
 
 	// Input capture
-	TIM4->CCMR1 &= ~(TIM_CCMR1_CC1S); // clear Capture/Compare 1 bits
-	TIM4->CCMR1 |= TIM_CCMR1_CC1S_0; // input capture mapped to timer input 1
+	TIM5->CCMR1 &= ~(TIM_CCMR1_CC1S); // clear Capture/Compare 1 bits
+	TIM5->CCMR1 |= TIM_CCMR1_CC1S_0; // input capture mapped to timer input 1
 
 	// capture/compare enable register
-	TIM4->CCER |= (TIM_CCER_CC1NP) | (TIM_CCER_CC1P) | (TIM_CCER_CC1E); // capture both rising/falling edges & enable capturing
+	TIM5->CCER |= (TIM_CCER_CC1NP) | (TIM_CCER_CC1P) | (TIM_CCER_CC1E); // capture both rising/falling edges & enable capturing
 
 	// DMA/Interrupt Enable Register
-	TIM4->DIER |= (TIM_DIER_UIE) | (TIM_DIER_CC1IE) | (TIM_DIER_CC1DE); // enable update interrupt, & interrupt/dma requests
+	TIM5->DIER |= (TIM_DIER_UIE) | (TIM_DIER_CC1IE) | (TIM_DIER_CC1DE); // enable update interrupt, & interrupt/dma requests
 
 	// Event generation register
-	TIM4->EGR |= TIM_EGR_UG; // Enable update generation
+	TIM5->EGR |= TIM_EGR_UG; // Enable update generation
 	
 	// Clear update interupt flag
-	TIM4->EGR &= ~(TIM_EGR_CC1G); // Clear event flag
+	TIM5->EGR &= ~(TIM_EGR_CC1G); // Clear event flag
 		
 	// Enable upcounting
-	TIM4->CR1 &= ~(TIM_CR1_DIR); // Upcounter
-	TIM4->CR1 |= TIM_CR1_CEN; // Enable Counter
+	TIM5->CR1 &= ~(TIM_CR1_DIR); // Upcounter
+	TIM5->CR1 |= TIM_CR1_CEN; // Enable Counter
 
 	// Enable Interupt
-	NVIC_EnableIRQ(TIM4_IRQn);
-	NVIC_SetPriority(TIM4_IRQn, 2);
+	NVIC_EnableIRQ(TIM5_IRQn);
+	NVIC_SetPriority(TIM5_IRQn, 2);
 }
 
-void TIM4_IRQHandler(void) {
+void TIM5_IRQHandler(void) {
 	// [TODO]	
-	if ((TIM4->SR & TIM_SR_UIF) && ((GPIOB->IDR & GPIO_IDR_ID6) == 0)) {
+	if ((TIM5->SR & TIM_SR_UIF) && ((GPIOA->IDR & GPIO_IDR_ID0) == 0)) {
 		// overflow that occurs within pulse
 		++overflowCount;
-		TIM4->SR &= ~(TIM_SR_UIF); // reset overflow flag
+		TIM5->SR &= ~(TIM_SR_UIF); // reset overflow flag
 	}
-	if (TIM4->SR & TIM_SR_CC4IF) {
-		if (GPIOB->IDR & GPIO_IDR_ID6) {
+	if (TIM5->SR & TIM_SR_CC1IF) {
+		if (GPIOA->IDR & GPIO_IDR_ID0) {
 			// rising edge detected in pulse
-			lastValue = TIM4->CCR1;
+			lastValue = TIM5->CCR1;
 		} else {
 			// falling edge
-			currentValue = TIM4->CCR1;
+			currentValue = TIM5->CCR1;
 			timeInterval = ((overflowCount * 0xFFFFUL) + currentValue) - lastValue;
 			overflowCount = 0; // reset overflow count
 		}
-		TIM4->SR &= ~(TIM_SR_CC1IF); // reset input capture flag
+		TIM5->SR &= ~(TIM_SR_CC1IF); // reset input capture flag
 	}	
 }
 
@@ -162,10 +162,10 @@ int main(void) {
 	while ((RCC->CFGR & RCC_CFGR_SWS) == 0); // Wait until HSI is system clock source
 
 	// from uart lab
-	System_Clock_Init();
+	// System_Clock_Init();
 
-	// Initalize UART -- using USART2
-	Init_USARTx(2);
+	// Initalize UART -- using USART1
+	// Init_USARTx(1);
 
 	// Input Capture Setup
 	Input_Capture_Setup();
@@ -182,7 +182,7 @@ int main(void) {
 			distanceCm = timeInterval / 58;
 			distanceIn = timeInterval / 148;
 			// possible idea: only send bluetooth signal if this condition is satisfied (to avoid junk data sent)
-			printf("Current Distance: %32d inches\n", distanceIn);
+			// printf("Current Distance: %32d inches\n", distanceIn);
 		} else {
 			// object out of range
 			distanceCm = 0;
