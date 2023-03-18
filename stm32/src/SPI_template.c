@@ -89,27 +89,30 @@ void SPI_Init(void){
 }
 
 
-// void SPI_Write(SPI_TypeDef * SPIx, uint8_t *txBuffer, uint8_t * rxBuffer, int size) {
+void SPI_Write(SPI_TypeDef * SPIx, uint8_t *txBuffer, int size) { // null for rx
+	for(int i = 0; i<size; i++){
+		//Set up SPI TX
+		while((SPIx->SR & SPI_SR_TXE) != SPI_SR_TXE){
+			// buffer and wait for TXE flag
+		}
+		*((volatile uint8_t*)&SPIx->DR) = *txBuffer+i;
 
-// 	//Set up SPI TX
-// 	while((SPIx->SR & SPI_SR_TXE) != SPI_SR_TXE){
-// 		// buffer and wait for TXE flag
-// 	}
-// 	*((volatile uint8_t*)&SPIx->DR) = write_data;
+		while((SPIx->SR & SPI_SR_BSY) == SPI_SR_BSY){
+			// Wait for busy flag to be low
+		}
+		// rxBuffer = rxBuffer + 8;
+	}
+}
 
-// 	while((SPIx->SR & SPI_SR_BSY) == SPI_SR_BSY){
-// 		// Wait for busy flag to be low
-// 	}
-// }
-
-// void SPI_Read(SPI_TypeDef * SPIx, uint8_t *rxBuffer, int size) {
-// 	//Set up SPI RX
-// 	while((SPIx->SR & SPI_SR_RXNE) != SPI_SR_RXNE){
-// 		// Wait for RXNE flag
-// 	}
-// 	*read_data = *((volatile uint8_t*)&SPIx->DR) ; // no way this works lol
-
-// }
+void SPI_Read(SPI_TypeDef * SPIx, uint8_t *rxBuffer, int size) {
+	for(int i = 0; i<size; i++){
+		//Set up SPI RX
+		while((SPIx->SR & SPI_SR_RXNE) != SPI_SR_RXNE){
+			// Wait for RXNE flag
+		}
+		*(rxBuffer+i) = *((volatile uint8_t*)&SPIx->DR) ; 
+	}
+}
  
 void SPI_Send_Byte(SPI_TypeDef* SPIx, uint8_t write_data) {
 	// TODO: send data from SPI1
@@ -117,6 +120,18 @@ void SPI_Send_Byte(SPI_TypeDef* SPIx, uint8_t write_data) {
 		// buffer and wait for TXE flag
 	}
 	*((volatile uint8_t*)&SPIx->DR) = write_data;
+
+	while((SPIx->SR & SPI_SR_BSY) == SPI_SR_BSY){
+		// Wait for busy flag to be low
+	}
+}
+
+void SPI_Send_2Byte(SPI_TypeDef* SPIx, uint16_t write_data) {
+	// TODO: send data from SPI1
+	while((SPIx->SR & SPI_SR_TXE) != SPI_SR_TXE){
+		// buffer and wait for TXE flag
+	}
+	*((volatile uint16_t*)&SPIx->DR) = write_data;
 
 	while((SPIx->SR & SPI_SR_BSY) == SPI_SR_BSY){
 		// Wait for busy flag to be low

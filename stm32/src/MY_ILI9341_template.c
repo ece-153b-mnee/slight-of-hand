@@ -307,7 +307,8 @@ void ILI9341_SendCommand(uint8_t com)
 	GPIOB->ODR &= ~(GPIO_ODR_OD4);
 	
 	//Write command byte using SPI
-	SPI_Write()
+	SPI_Send_Byte(SPI1, data);
+	
 	//Bring CS HIGH
 	GPIOB->ODR |= (GPIO_ODR_OD4);
 
@@ -323,7 +324,7 @@ void ILI9341_SendData(uint8_t data)
 	//Put CS LOW
 	GPIOB->ODR &= ~(GPIO_ODR_OD4);
 	//Write data using SPI
-
+	SPI_Write(spiLcdHandle, &tmpCmd, size);
 	//Bring CS HIGH
 	GPIOB->ODR |= (GPIO_ODR_OD4);
 
@@ -333,18 +334,19 @@ void ILI9341_SendData_Multi(uint16_t Colordata, uint32_t size)
 {
 	uint8_t colorL,colorH;
 	//Set DC HIGH for DATA mode B5
-	SPI1->CR1 |= SPI_CR1_BIDIMODE;
-
+	tftDC_GPIO->ODR |= (1<<(tftDC_PIN));
 	//Put CS LOW
-	GPIOB->ODR &= ~(GPIO_ODR_OD4);
+	tftCS_GPIO->ODR &= ~(1<<(tftCS_PIN));
 
 	//Write data using SPI
-	
+	SPI_Write(spiLcdHandle, &colorL, size);
+	SPI_Write(spiLcdHandle, &colorR, size);
+
 	//Wait for end of DMA transfer
 
 	//Bring CS HIGH
-	GPIOB->ODR |= (GPIO_ODR_OD4);
-
+	tftCS_GPIO->ODR &= ~(1<<(tftCS_PIN));
+	// tftCS_GPIO->ODR |= (1<<tftCS_PIN);
 }
 
 
@@ -370,25 +372,31 @@ void ILI9341_SetCursorPosition(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y
 void ILI9341_Init(SPI_TypeDef *spiLcdHandle, GPIO_TypeDef *csPORT, uint16_t csPIN, GPIO_TypeDef *dcPORT, uint16_t dcPIN, GPIO_TypeDef *resetPORT, uint16_t resetPIN)
  {
 	//Copy SPI pointer
-	memcpy(&lcdSPIhandle, spiLcdHandle, sizeof(*spiLcdHandle));	
+	lcdSPIhandle = spiLcdHandle;
 	//set CS pin variable (look at global variables at the top of the file)
-	tftCS_GPIO = csPORT;
-	tftCS_PIN = csPIN;
+	tftCS_GPIO = csPORT; //B4
+	tftCS_PIN = csPIN; //B4
 	//set DC pin variable
-	tftDC_GPIO = dcPORT;
-	tftDC_PIN = dcPIN;
-	//  HAL_GPIO_WritePin(tftCS_GPIO, tftCS_PIN, GPIO_PIN_SET);
+	tftDC_GPIO = dcPORT; //B5
+	tftDC_PIN = dcPIN; //B5
+
 	//set RESET pin variable
-	tftRESET_GPIO = resetPORT;
-	tftRESET_PIN = resetPIN;
+	tftRESET_GPIO = resetPORT; //B5
+	tftRESET_PIN = resetPIN; //B5
+
 	//clear the mode register bits
-	 
+	tftCS_GPIO->MODER &= ~(3<<(dcPIN*2)); //B4
+	tftDC_GPIO->MODER &= ~(3<<(dcPIN*2)); //B4
+	tftRESET_GPIO->MODER &= ~(3<<(resetPIN*2)); //B5
 	//set pins to output mode
-	 
+	tftCS_GPIO->MODER |= (1<<(dcPIN*2));
+	tftDC_GPIO->MODER |= (1<<(dcPIN*2));
+	tftRESET_GPIO->MODER |= (1<<(resetPIN*2));
 	
 
 	//Turn LCD on by turning off the reset (check whether reset is active high)
-	 
+	tftRESET_GPIO->ODR |= (1<<(resetPIN)); // i think active high
+
    ILI9341_SendCommand (ILI9341_RESET); // software reset comand
    SPI_Delay(100);
    ILI9341_SendCommand (ILI9341_DISPLAY_OFF); // display off
