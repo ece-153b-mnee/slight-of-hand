@@ -150,5 +150,10 @@ void SPI_Receive_Byte(SPI_TypeDef* SPIx, uint8_t* read_data) {
 
 //Incorporate delay function (same as delay() in previous labs but with us)
 void SPI_Delay(uint32_t us) {
+  uint32_t curTicks;
 
+  curTicks = msTicks;
+  while ((msTicks - curTicks) < us);
+	
+  msTicks = 0;
 }
