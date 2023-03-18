@@ -115,18 +115,9 @@ int main(void) {
 	SysTick_Init();
 	
 	
-	SPI_GPIO_Init();
-	SPI_Init();
-
-	
-	ILI9341_Init(SPI1,GPIOA,5,GPIOA,6,GPIOA,7);
-	ILI9341_setRotation(1);
-	ILI9341_Fill(COLOR_GREEN);
-	ILI9341_printText("poggers",16,16, COLOR_WHITE, COLOR_GREEN, 3);
-	ILI9341_printText("Fuck all them haters saying I couldn't do it",70,70, COLOR_BLACK, COLOR_CYAN, 2);
-	//SPI_Delay(1000);
-	ILI9341_printText("They couldn't be me            ",70,70, COLOR_BLACK, COLOR_CYAN, 2);
-	ILI9341_printText("poggers2",16,16, COLOR_WHITE, COLOR_GREEN, 3);
+	LCD_Setup_White();
+	LCD_Set_Time("04:24 PM");
+	LCD_Set_Brightness("69%");
 	
 	// from uart lab -> 80 mhz -> could probably delete
 	// System_Clock_Init();
