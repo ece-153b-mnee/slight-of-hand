@@ -11,6 +11,9 @@
 #include "UART.h"
 #include "ultrasonic.h"
 #include <string.h>
+#include "SPI_template.h"
+#include "MY_ILI9341_template.h"
+#include "SysTimer.h"
 
 // ultrasonic variables
 uint32_t volatile currentValue = 0;
