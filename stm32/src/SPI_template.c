@@ -172,18 +172,6 @@ void SPI_Send_Byte(SPI_TypeDef* SPIx, uint8_t write_data) {
 		// Wait for busy flag to be low
 	}
 }
- 
-void SPI_Send_Byte(SPI_TypeDef* SPIx, uint8_t write_data) {
-	// TODO: send data from SPI1
-	while((SPIx->SR & SPI_SR_TXE) != SPI_SR_TXE){
-		// buffer and wait for TXE flag
-	}
-	*((volatile uint8_t*)&SPIx->DR) = write_data;
-
-	while((SPIx->SR & SPI_SR_BSY) == SPI_SR_BSY){
-		// Wait for busy flag to be low
-	}
-}
 
 void SPI_Send_2Byte(SPI_TypeDef* SPIx, uint16_t write_data) {
 	// TODO: send data from SPI1
@@ -205,29 +193,6 @@ void SPI_Receive_Byte(SPI_TypeDef* SPIx, uint8_t* read_data) {
 	*read_data = *((volatile uint8_t*)&SPIx->DR) ; // no way this works lol
 
 }
-
-
-void SPI_Send_2Byte(SPI_TypeDef* SPIx, uint16_t write_data) {
-	// TODO: send data from SPI1
-	while((SPIx->SR & SPI_SR_TXE) != SPI_SR_TXE){
-		// buffer and wait for TXE flag
-	}
-	*((volatile uint16_t*)&SPIx->DR) = write_data;
-
-	while((SPIx->SR & SPI_SR_BSY) == SPI_SR_BSY){
-		// Wait for busy flag to be low
-	}
-}
-
-void SPI_Receive_Byte(SPI_TypeDef* SPIx, uint8_t* read_data) {
-	// TODO: receive data from SPI2
-	while((SPIx->SR & SPI_SR_RXNE) != SPI_SR_RXNE){
-		// Wait for RXNE flag
-	}
-	*read_data = *((volatile uint8_t*)&SPIx->DR) ; // no way this works lol
-
-}
-
 
 //Incorporate delay function (same as delay() in previous labs but with us)
 void SPI_Delay(uint32_t us) {
