@@ -113,7 +113,7 @@ void ILI9341_SendData(uint8_t data);
 //2.2 Write multiple/DMA
 void ILI9341_SendData_Multi(uint16_t Colordata, uint32_t size);
 
-void SPI_Transmit(SPI_TypeDef *hspi, uint8_t *pData, uint16_t Size, uint32_t Timeout);
+void SPI_Transmit(SPI_TypeDef *hspi, uint8_t *pData, uint16_t Size);
 //3. Set cursor position
 void ILI9341_SetCursorPosition(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
 //4. Initialise function

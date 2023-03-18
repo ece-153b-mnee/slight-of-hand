@@ -13,7 +13,7 @@ void SPI_GPIO_Init(void) {
 
 
 	RCC->AHB2ENR |= RCC_AHB2ENR_GPIOBEN; // enable clock for port b
-
+	RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
 
 	// Set to alt function
 	GPIOB->MODER &= ~(GPIO_MODER_MODE3); // Mask
@@ -89,6 +89,7 @@ void SPI_Init(void){
 	// Enable SPI clock and Reset SPI
 	RCC->APB2ENR |= RCC_APB2ENR_SPI1EN; //a) Clock enable
 	RCC->APB2RSTR |= RCC_APB2RSTR_SPI1RST; //b) Set RCC SPI Reset bit, p 238
+	RCC->APB2RSTR &= ~RCC_APB2RSTR_SPI1RST; //b) Set RCC SPI Reset bit, p 238 added
 	// Disable SPI
 	SPI1->CR1 &= ~SPI_CR1_SPE; //c) Disable spi enable bit to configure
 	
@@ -140,12 +141,13 @@ void SPI_Write(SPI_TypeDef * SPIx, uint8_t *txBuffer, int size) { // null for rx
 		while((SPIx->SR & SPI_SR_TXE) != SPI_SR_TXE){
 			// buffer and wait for TXE flag
 		}
-		*((volatile uint8_t*)&SPIx->DR) = *txBuffer+i;
+		*((volatile uint8_t*)&SPIx->DR) = *txBuffer;
 
 		while((SPIx->SR & SPI_SR_BSY) == SPI_SR_BSY){
 			// Wait for busy flag to be low
 		}
 		// rxBuffer = rxBuffer + 8;
+		txBuffer = txBuffer++;
 	}
 }
 
@@ -156,6 +158,18 @@ void SPI_Read(SPI_TypeDef * SPIx, uint8_t *rxBuffer, int size) {
 			// Wait for RXNE flag
 		}
 		*(rxBuffer+i) = *((volatile uint8_t*)&SPIx->DR) ; 
+	}
+}
+ 
+void SPI_Send_Byte(SPI_TypeDef* SPIx, uint8_t write_data) {
+	// TODO: send data from SPI1
+	while((SPIx->SR & SPI_SR_TXE) != SPI_SR_TXE){
+		// buffer and wait for TXE flag
+	}
+	*((volatile uint8_t*)&SPIx->DR) = write_data;
+
+	while((SPIx->SR & SPI_SR_BSY) == SPI_SR_BSY){
+		// Wait for busy flag to be low
 	}
 }
  
@@ -193,12 +207,35 @@ void SPI_Receive_Byte(SPI_TypeDef* SPIx, uint8_t* read_data) {
 }
 
 
+void SPI_Send_2Byte(SPI_TypeDef* SPIx, uint16_t write_data) {
+	// TODO: send data from SPI1
+	while((SPIx->SR & SPI_SR_TXE) != SPI_SR_TXE){
+		// buffer and wait for TXE flag
+	}
+	*((volatile uint16_t*)&SPIx->DR) = write_data;
+
+	while((SPIx->SR & SPI_SR_BSY) == SPI_SR_BSY){
+		// Wait for busy flag to be low
+	}
+}
+
+void SPI_Receive_Byte(SPI_TypeDef* SPIx, uint8_t* read_data) {
+	// TODO: receive data from SPI2
+	while((SPIx->SR & SPI_SR_RXNE) != SPI_SR_RXNE){
+		// Wait for RXNE flag
+	}
+	*read_data = *((volatile uint8_t*)&SPIx->DR) ; // no way this works lol
+
+}
+
+
 //Incorporate delay function (same as delay() in previous labs but with us)
 void SPI_Delay(uint32_t us) {
-  uint32_t curTicks;
-
-  curTicks = msTicks;
-  while ((msTicks - curTicks) < us);
+  uint32_t i , j;
+	for(i=0;i<us;i++){
+		for(j=0;j<18;j++){
+			(void)i;
+		}
+	}
 	
-  msTicks = 0;
 }

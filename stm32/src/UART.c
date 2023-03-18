@@ -93,6 +93,7 @@ void USART_Init(USART_TypeDef* USARTx) {
 	USARTx->CR2 &= ~(USART_CR2_STOP); // Set stop bits to 1
 
 	// deaulft clk speed 80 Mhz/9600 = 8333
+	// clk speed 16mhz/9600 = 1667
 	USARTx->BRR = 8333; 
 
 	USARTx->CR1 |= (USART_CR1_TE); // Enable trasmit
