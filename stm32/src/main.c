@@ -398,5 +398,5 @@ int main(void) {
 	SPI_Init();
 
 	
-	ILI9341_Init(SPI1,GPIOB,4,GPIOB,5,GPIOB,3);
+	ILI9341_Init(SPI1,GPIOA,5,GPIOA,6,GPIOA,7);
 }
