@@ -45,13 +45,13 @@ void TIM5_IRQHandler(void) {
 
 void Init_Ultrasonic() {
 	// Enable High Speed Internal Clock (HSI = 16 MHz)
-	RCC->CR |= RCC_CR_HSION;
-	while ((RCC->CR & RCC_CR_HSIRDY) == 0); // Wait until HSI is ready
+	// RCC->CR |= RCC_CR_HSION;
+	// while ((RCC->CR & RCC_CR_HSIRDY) == 0); // Wait until HSI is ready
 
 	// Select HSI as system clock source 
-	RCC->CFGR &= ~RCC_CFGR_SW;
-	RCC->CFGR |= RCC_CFGR_SW_HSI;
-	while ((RCC->CFGR & RCC_CFGR_SWS) == 0); // Wait until HSI is system clock source
+	// RCC->CFGR &= ~RCC_CFGR_SW;
+	// RCC->CFGR |= RCC_CFGR_SW_HSI;
+	// while ((RCC->CFGR & RCC_CFGR_SWS) == 0); // Wait until HSI is system clock source
 
 	Input_Capture_Setup();
 	Trigger_Setup();
@@ -75,8 +75,8 @@ void Init_USARTx(int x) {
 }
 
 int main(void) {
-	/*
-		System_Clock_Init();   // System Clock = 80 MHz
+	
+	System_Clock_Init();   // System Clock = 80 MHz
 	SysTick_Init();
 	
 	
@@ -92,9 +92,9 @@ int main(void) {
 	//SPI_Delay(1000);
 	ILI9341_printText("They couldn't be me            ",70,70, COLOR_BLACK, COLOR_CYAN, 2);
 	ILI9341_printText("poggers2",16,16, COLOR_WHITE, COLOR_GREEN, 3);
-	*/
+	
 	// from uart lab -> 80 mhz -> could probably delete
-	System_Clock_Init();
+	// System_Clock_Init();
 	
 	// Initialize Ultrasonic Sensor
 	Init_Ultrasonic();
