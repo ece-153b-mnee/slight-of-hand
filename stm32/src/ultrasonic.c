@@ -18,7 +18,7 @@ void Input_Capture_Setup() {
 	RCC->APB1ENR1 |= RCC_APB1ENR1_TIM5EN;
 
 	// Timer set-up
-	TIM5->PSC = 15; // Prescaler value
+	TIM5->PSC = 79; // Prescaler value
 	TIM5->CR1 |= TIM_CR1_ARPE; // enable auto-reload preload
 	TIM5->ARR |= TIM_ARR_ARR; // max value
 
@@ -67,7 +67,7 @@ void Trigger_Setup() {
 	// Enable TIM1_CH2 Clock
 	RCC->APB2ENR |= RCC_APB2ENR_TIM1EN;
 
-	TIM1->PSC = 15; // Prescaler value
+	TIM1->PSC = 79; // Prescaler value
 	TIM1->CR1 |= TIM_CR1_ARPE; // enable auto-reload preload
 	TIM1->ARR |= TIM_ARR_ARR; // max value (??)
 	
