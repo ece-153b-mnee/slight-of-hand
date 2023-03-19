@@ -3,6 +3,7 @@
 #include "stm32l476xx.h"
 #include "SPI_template.h"
 #include "UART.h"
+#include "RTC.h"
 
 void LCD_Setup_White(void);
 

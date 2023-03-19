@@ -58,3 +58,9 @@ void LCD_Set_Brightness(uint32_t distanceIn){
 	}
 }
 
+void LCD_Set_Temp(){
+    char str[4];
+    int hour = __RTC_CONVERT_BCD2BIN(RTC_TIME_GetHour())
+    sprintf(str, "%d", hour);
+    return str;
+}

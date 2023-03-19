@@ -125,9 +125,9 @@ int main(void) {
 	// Initialize LCD
 	LCD_Setup_White();
 	Get_RTC_Calendar(strTime,strDate);
-	while(1){
-		LCD_Set_Time(strTime);
-	}
+	LCD_Set_Temp();
+	LCD_Set_Time(strTime);
+	LCD_Set_Temp();
 	// from uart lab -> 80 mhz -> could probably delete
 	// System_Clock_Init();
 	
@@ -136,6 +136,8 @@ int main(void) {
 	uint32_t distanceCm = 0;
 	uint32_t distanceIn = 0;
 	while(1) {
+		Get_RTC_Calendar(strTime,strDate);
+		LCD_Set_Time(strTime);
 		// [TODO] Store your measurements on Stack
 		if ((150 <= timeInterval) && (timeInterval <= 1600)) {
 			// max pulse 25ms -> ~168 inches. limit to 1480 -> ~10 inches
