@@ -114,30 +114,32 @@ int main(void) {
 	System_Clock_Init();   // System Clock = 80 MHz
 	SysTick_Init();
 	
-	
-	LCD_Setup_White();
-	LCD_Set_Time("04:24 PM");
-	LCD_Set_Brightness("69%");
-	
-	// from uart lab -> 80 mhz -> could probably delete
-	// System_Clock_Init();
-	
 	// Initialize Ultrasonic Sensor
 	Init_Ultrasonic();
 
 	// Initalize UART -- using USART1
 	Init_USARTx(1);
+	
+	// Initialize LCD
+	LCD_Setup_White();
+	LCD_Set_Time("04:24 PM");
+	
+	// from uart lab -> 80 mhz -> could probably delete
+	// System_Clock_Init();
+	
+
 
 	uint32_t distanceCm = 0;
 	uint32_t distanceIn = 0;
 	while(1) {
 		// [TODO] Store your measurements on Stack
-		if ((150 <= timeInterval) && (timeInterval <= 1480)) {
+		if ((150 <= timeInterval) && (timeInterval <= 1600)) {
 			// max pulse 25ms -> ~168 inches. limit to 1480 -> ~10 inches
 			distanceCm = timeInterval / 58;
 			distanceIn = timeInterval / 148;
 			// possible idea: only send bluetooth signal if this condition is satisfied (to avoid junk data sent)
 			printf("%32u\n", distanceIn);
+			LCD_Set_Brightness(distanceIn);
 		} else {
 			// object out of range
 			distanceCm = 0;

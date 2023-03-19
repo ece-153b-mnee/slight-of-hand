@@ -24,6 +24,12 @@ void LCD_Setup_White(){
 	ILI9341_printText("Ethan Epp",5,300,COLOR_BLACK,COLOR_WHITE,1);
 	delay(250);
 	ILI9341_printText("Matthew Nguyen",5,310,COLOR_BLACK,COLOR_WHITE,1);
+	
+	// start light brightness w/ 100%
+	uint32_t initialBrightness;
+	initialBrightness = 10;
+	printf("%32u\n", initialBrightness);
+	LCD_Set_Brightness(10);
 
 }
 
@@ -32,8 +38,23 @@ void LCD_Set_Time(char text[]){
 	ILI9341_printText(text,48,128,COLOR_BLACK,COLOR_WHITE,3);
 }
 
-void LCD_Set_Brightness(char text[]){
+void LCD_Set_Brightness(uint32_t distanceIn){
 	delay(250);
-	ILI9341_printText(text,165,224,COLOR_BLACK,COLOR_WHITE,2);
+	if ((1 <= distanceIn) && (distanceIn <= 2)) {
+		// 25%
+		ILI9341_printText("25% ",165,224,COLOR_BLACK,COLOR_WHITE,2);
+	}
+	else if ((3 <= distanceIn) && (distanceIn <= 5)) {
+		// 50%
+		ILI9341_printText("50% ",165,224,COLOR_BLACK,COLOR_WHITE,2);
+	}
+	else if ((6 <= distanceIn) && (distanceIn <= 8)) {
+		// 75%
+		ILI9341_printText("75% ",165,224,COLOR_BLACK,COLOR_WHITE,2);
+	}
+	else if ((9 <= distanceIn) && (distanceIn <= 10)) {
+		// 100%
+		ILI9341_printText("100%",165,224,COLOR_BLACK,COLOR_WHITE,2);
+	}
 }
 
