@@ -243,26 +243,18 @@ void RTC_Set_Alarm(void) {
 	RTC->CR &= ~RTC_CR_ALRAE;
 	RTC->CR &= ~RTC_CR_ALRAIE;
 
-	// Disable alarm B
-	RTC->CR &= ~RTC_CR_ALRBE;
-	RTC->CR &= ~RTC_CR_ALRBIE;
-
 	while (((RTC->ISR & RTC_ISR_ALRAWF) && (RTC->ISR & RTC_ISR_ALRBWF)) == 0); // wait until ready to write
 
 	// alarm a: toggle every 30 sec
-	RTC->ALRMAR &= ~RTC_ALRMAR_MSK1; // idk about this -> pdf says 0 considers values whereas 1 doesn't?
+	RTC->ALRMAR &= ~RTC_ALRMAR_MSK1;
 	RTC->ALRMAR |= RTC_ALRMAR_MSK2;
 	RTC->ALRMAR |= RTC_ALRMAR_MSK3;
 	RTC->ALRMAR |= RTC_ALRMAR_MSK4;
-	RTC->ALRMAR |= (RTC_ALRMAR_MNT_0 |RTC_ALRMAR_MNT_1); // Alarm A interrupts at 30 second minute interupt
-
+	RTC->ALRMAR |= (3UL<<4) | (0UL); // Alarm A interrupts at 30 second fields
 	// Enable alarm A
 	RTC->CR |= RTC_CR_ALRAE;
 	RTC->CR |= RTC_CR_ALRAIE;
 
-	// Enable alarm B
-	RTC->CR |= RTC_CR_ALRBE;
-	RTC->CR |= RTC_CR_ALRBIE;
 
 	// Clear interrupt flag
 	EXTI->PR1 |= EXTI_PR1_PIF18; // clear interrupt flag
@@ -270,10 +262,9 @@ void RTC_Set_Alarm(void) {
 
 	// Clear Flag 
 	RTC->ISR &= ~RTC_ISR_ALRAF;
-	RTC->ISR &= ~RTC_ISR_ALRBF;
 
 	// Reenable write protection
-	// RTC_Enable_Write_Protection();
+	RTC_Enable_Write_Protection();
 }
 
 void RTC_Alarm_Enable(void) {
@@ -301,7 +292,7 @@ void RTC_Alarm_IRQHandler(void) {
 		// LED
 		// Function to set kelvin temperature
 		
-
+		printf("t");
 		RTC->ISR &= ~RTC_ISR_ALRAF;
 		RTC->ISR &= ~RTC_ISR_ALRBF;
 	// }
