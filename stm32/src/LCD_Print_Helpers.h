@@ -10,3 +10,5 @@ void LCD_Setup_White(void);
 void LCD_Set_Time(char text[]);
 
 void LCD_Set_Brightness(uint32_t distanceIn);
+
+void LCD_Set_Light(void);

@@ -8,7 +8,7 @@
  
  
 #include "RTC.h"
-
+#include "MY_ILI9341_template.h"
 // Use the 32.768 kHz low-speed external clock as RTC clock source
 
 // Helper macro to convert a value from 2 digit decimal format to BCD format
@@ -176,7 +176,7 @@ void RTC_Enable_Write_Protection(void) {
 
 
 
-char[] RTC_Get_Time_String(void){
+char* RTC_Get_Time_String(void){
 	char strTime[10] = {0};
 
 	sprintf((char*)strTime,"%.2d:%.2d:", 
@@ -291,8 +291,7 @@ void RTC_Alarm_IRQHandler(void) {
 	// if ((EXTI->PR1 & EXTI_PR1_PIF18) != 0) {
 		// LED
 		// Function to set kelvin temperature
-		
-		printf("t");
+		printf("t\n");
 		RTC->ISR &= ~RTC_ISR_ALRAF;
 		RTC->ISR &= ~RTC_ISR_ALRBF;
 	// }

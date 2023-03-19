@@ -116,6 +116,8 @@ int main(void) {
 	System_Clock_Init();   // System Clock = 80 MHz
 	SysTick_Init();
 	RTC_Init();
+	RTC_Alarm_Enable();
+	RTC_Set_Alarm();
 	// Initialize Ultrasonic Sensor
 	Init_Ultrasonic();
 
@@ -125,9 +127,8 @@ int main(void) {
 	// Initialize LCD
 	LCD_Setup_White();
 	Get_RTC_Calendar(strTime,strDate);
-	LCD_Set_Temp();
+	LCD_Set_Light();
 	LCD_Set_Time(strTime);
-	LCD_Set_Temp();
 	// from uart lab -> 80 mhz -> could probably delete
 	// System_Clock_Init();
 	
