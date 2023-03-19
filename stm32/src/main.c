@@ -108,12 +108,14 @@ void Init_USARTx(int x) {
 // 	ILI9341_printText(text,165,224,COLOR_BLACK,COLOR_WHITE,2);
 // }
 
+char strTime[12] = {0};
+char strDate[12] = {0};
 
 int main(void) {
 	
 	System_Clock_Init();   // System Clock = 80 MHz
 	SysTick_Init();
-	
+	RTC_Init();
 	// Initialize Ultrasonic Sensor
 	Init_Ultrasonic();
 
@@ -122,8 +124,10 @@ int main(void) {
 	
 	// Initialize LCD
 	LCD_Setup_White();
-	LCD_Set_Time("04:24 PM");
-	
+	Get_RTC_Calendar(strTime,strDate);
+	while(1){
+		LCD_Set_Time(strTime);
+	}
 	// from uart lab -> 80 mhz -> could probably delete
 	// System_Clock_Init();
 	

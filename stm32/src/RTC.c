@@ -70,7 +70,7 @@ void RTC_Init(void) {
 	RTC_Set_Calendar_Date(RTC_WEEKDAY_THURSDAY, 3, RTC_MONTH_FEBRUARY, 23); /* [TODO] These values are stubs - fill in current date */
 	
 	// Configure the Time 
-	RTC_Set_Time(0, 19, 45, 18); /* [TODO] These values are stubs - fill in current time */
+	RTC_Set_Time(1, 10, 37, 22); /* [TODO] These values are stubs - fill in current time */
   
 	// Exit of initialization mode 
 	RTC->ISR &= ~RTC_ISR_INIT;
@@ -172,6 +172,17 @@ void RTC_Disable_Write_Protection(void) {
 void RTC_Enable_Write_Protection(void) {
 	// [TODO]
 	RTC->WPR = 0x69;
+}
+
+
+
+char[] RTC_Get_Time_String(void){
+	char strTime[10] = {0};
+
+	sprintf((char*)strTime,"%.2d:%.2d:", 
+		__RTC_CONVERT_BCD2BIN(RTC_TIME_GetHour()), 
+		__RTC_CONVERT_BCD2BIN(RTC_TIME_GetMinute()));
+	return strTime;
 }
 
 uint32_t RTC_TIME_GetHour(void) {
