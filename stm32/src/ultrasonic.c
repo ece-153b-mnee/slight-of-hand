@@ -1,3 +1,8 @@
+/*
+ * ECE 153B - Winter 2023
+ *
+ * sLight of Hand by Matthew Nguyen & Ethan Epp
+ */
 #include "ultrasonic.h"
 
 void Input_Capture_Setup() {

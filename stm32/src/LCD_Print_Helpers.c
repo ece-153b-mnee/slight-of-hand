@@ -1,3 +1,9 @@
+/*
+ * ECE 153B - Winter 2023
+ *
+ * sLight of Hand by Matthew Nguyen & Ethan Epp
+ */
+
 #include "LCD_Print_Helpers.h"
 
 #define __RTC_CONVERT_BCD2BIN(__VALUE__) (uint8_t)(((uint8_t)((__VALUE__) & (uint8_t)0xF0) >> (uint8_t)0x4) * 10 + ((__VALUE__) & (uint8_t)0x0F))

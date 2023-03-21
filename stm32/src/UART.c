@@ -1,3 +1,8 @@
+/*
+ * ECE 153B - Winter 2023
+ *
+ * sLight of Hand by Matthew Nguyen & Ethan Epp
+ */
 #include "UART.h"
 
 void UART1_Init(void) {
@@ -67,7 +72,6 @@ void UART2_GPIO_Init(void) {
 
 	GPIOA->AFR[0] &= ~(GPIO_AFRL_AFSEL3); // Mask afr7
 	GPIOA->AFR[0] |= (GPIO_AFRL_AFSEL3_0 | GPIO_AFRL_AFSEL3_1 | GPIO_AFRL_AFSEL3_2);
-// DO WE NEED TO INITIALIZE THEM AS INPUT AND OUTPUT
 
 
 // PA2 Output Initializations

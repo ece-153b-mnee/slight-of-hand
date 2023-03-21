@@ -45,15 +45,7 @@ void TIM5_IRQHandler(void) {
 }
 
 void Init_Ultrasonic() {
-	// Enable High Speed Internal Clock (HSI = 16 MHz)
-	// RCC->CR |= RCC_CR_HSION;
-	// while ((RCC->CR & RCC_CR_HSIRDY) == 0); // Wait until HSI is ready
-
-	// Select HSI as system clock source 
-	// RCC->CFGR &= ~RCC_CFGR_SW;
-	// RCC->CFGR |= RCC_CFGR_SW_HSI;
-	// while ((RCC->CFGR & RCC_CFGR_SWS) == 0); // Wait until HSI is system clock source
-
+	// Ultrasonic PWM initialization 
 	Input_Capture_Setup();
 	Trigger_Setup();
 
@@ -74,39 +66,6 @@ void Init_USARTx(int x) {
 		// Do nothing...
 	}
 }
-
-// void LCD_Setup_White(){
-// 	ILI9341_Init(SPI1,GPIOA,5,GPIOA,6,GPIOA,7);
-// 	delay(750);
-// 	ILI9341_setRotation(1);
-// 	delay(750);
-// 	ILI9341_Fill(COLOR_WHITE);
-// 	delay(750);
-// 	ILI9341_printText("sLight   of hand",25,16,COLOR_BLACK,COLOR_WHITE,2);
-// 	delay(250);
-// 	ILI9341_printText("Light",37,13,COLOR_YELLOW,COLOR_WHITE,3);
-// 	delay(250);
-// 	ILI9341_printText("10:30 AM",48,128,COLOR_BLACK,COLOR_WHITE,3);
-// 	delay(250);
-// 	ILI9341_printText("Brightness: ",24,224,COLOR_BLACK,COLOR_WHITE,2);
-// 	delay(250);
-// 	ILI9341_printText("100%",165,224,COLOR_BLACK,COLOR_WHITE,2);
-// 	delay(250);
-// 	ILI9341_printText("Ethan Epp",5,300,COLOR_BLACK,COLOR_WHITE,1);
-// 	delay(250);
-// 	ILI9341_printText("Matthew Nguyen",5,310,COLOR_BLACK,COLOR_WHITE,1);
-
-// }
-
-// void LCD_Set_Time(char text[]){
-// 	delay(250);
-// 	ILI9341_printText(text,48,128,COLOR_BLACK,COLOR_WHITE,3);
-// }
-
-// void LCD_Set_Brightness(char text[]){
-// 	delay(250);
-// 	ILI9341_printText(text,165,224,COLOR_BLACK,COLOR_WHITE,2);
-// }
 
 char strTime[12] = {0};
 char strDate[12] = {0};
@@ -129,8 +88,6 @@ int main(void) {
 	Get_RTC_Calendar(strTime,strDate);
 	LCD_Set_Light();
 	LCD_Set_Time(strTime);
-	// from uart lab -> 80 mhz -> could probably delete
-	// System_Clock_Init();
 	
 
 
@@ -144,7 +101,6 @@ int main(void) {
 			// max pulse 25ms -> ~168 inches. limit to 1480 -> ~10 inches
 			distanceCm = timeInterval / 58;
 			distanceIn = timeInterval / 148;
-			// possible idea: only send bluetooth signal if this condition is satisfied (to avoid junk data sent)
 			printf("%32u\n", distanceIn);
 			LCD_Set_Brightness(distanceIn);
 		} else {
@@ -152,6 +108,5 @@ int main(void) {
 			distanceCm = 0;
 			distanceIn = 0;
 		}
-				// printf("Test message\n");
 	}
 }

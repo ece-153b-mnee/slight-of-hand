@@ -1,3 +1,8 @@
+/*
+ * ECE 153B - Winter 2023
+ *
+ * sLight of Hand by Matthew Nguyen & Ethan Epp
+ */
 #include "SPI_template.h"
 #include "SysTimer.h"
 #include "stm32l476xx.h"
@@ -29,11 +34,8 @@ void SPI_GPIO_Init(void) {
 	GPIOB->AFR[0] &= ~(GPIO_AFRL_AFSEL4); // mask alt func
 	GPIOB->AFR[0] &= ~(GPIO_AFRL_AFSEL5); // mask alt func
 	GPIOB->AFR[0] |= (GPIO_AFRL_AFSEL3_0 | GPIO_AFRL_AFSEL3_2); // Set as alt func 5
-	// GPIOB->AFR[0] |= (GPIO_AFRL_AFSEL3_2); // Set as alt func 5
 	GPIOB->AFR[0] |= (GPIO_AFRL_AFSEL4_0 | GPIO_AFRL_AFSEL4_2); // Set as alt func 5
-	// GPIOB->AFR[0] |= (GPIO_AFRL_AFSEL4_2); // Set as alt func 5
 	GPIOB->AFR[0] |= (GPIO_AFRL_AFSEL5_0 | GPIO_AFRL_AFSEL5_2); // Set as alt func 5
-	// GPIOB->AFR[0] |= (GPIO_AFRL_AFSEL5_2); // Set as alt func 5
 
 	// Set to push-pull
 	GPIOB->OTYPER &= ~(GPIO_OTYPER_OT3);
@@ -50,38 +52,6 @@ void SPI_GPIO_Init(void) {
 	GPIOB->PUPDR &= ~(GPIO_PUPDR_PUPD4);
 	GPIOB->PUPDR &= ~(GPIO_PUPDR_PUPD5);
 
-
-
-
-
-	// RCC->AHB2ENR |= RCC_AHB2ENR_GPIOBEN; // enable clock for port b
-
-
-	// // Set to alt function
-	// GPIOB->MODER &= ~(GPIO_MODER_MODE3); // Mask
-	// GPIOB->MODER &= ~(GPIO_MODER_MODE4);
-	// GPIOB->MODER &= ~(GPIO_MODER_MODE5);
-		
-	// GPIOB->MODER |= (GPIO_MODER_MODE3_1);
-
-
-	// // Set Alternative Functions for SPI
-	// GPIOB->AFR[0] &= ~(GPIO_AFRL_AFSEL3); // mask alt func
-	// GPIOB->AFR[0] |= (GPIO_AFRL_AFSEL3_0 | GPIO_AFRL_AFSEL3_2); // Set as alt func 5
-	
-
-	// // Set GPIO Pins to: Very High Output speed, Output Type Push-Pull, and No Pull-Up/Down
-	// GPIOB->OTYPER &= ~(GPIO_OTYPER_OT3);
-	// GPIOB->OSPEEDR |= GPIO_OSPEEDR_OSPEED3;
-	// GPIOB->PUPDR &= ~(GPIO_PUPDR_PUPD3);
-
-
-	// GPIOB->MODER |= (GPIO_MODER_MODE4_0);
-	// GPIOB->MODER |= (GPIO_MODER_MODE5_0);
-	// GPIOB->OTYPER &= ~(GPIO_OTYPER_OT4);
-	// GPIOB->OTYPER &= ~(GPIO_OTYPER_OT5);
-	// GPIOB->PUPDR &= ~(GPIO_PUPDR_PUPD4);
-	// GPIOB->PUPDR &= ~(GPIO_PUPDR_PUPD5);
 }
 
 //SPI Init for ILI9341 on Nucleo board
