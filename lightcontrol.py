@@ -1,16 +1,12 @@
 # coding=utf-8
-import sys
 from lifxlan import LifxLAN
 import serial
 
 def main():
     num_lights = None
-    # instantiate LifxLAN client, num_lights may be None (unknown).
-    # In fact, you don't need to provide LifxLAN with the number of bulbs at all.
-    # lifx = LifxLAN() works just as well. Knowing the number of bulbs in advance 
-    # simply makes initial bulb discovery faster.
+    # instantiate LifxLAN client
     print("Discovering lights...")
-    lifx = LifxLAN(num_lights, verbose=True)
+    lifx = LifxLAN(verbose=True)
 
     # get devices
     devices = lifx.get_lights()
@@ -19,6 +15,36 @@ def main():
     # bluetooth
     bt = serial.Serial(port='/dev/cu.DSDTECHHC-05', baudrate=9600, timeout=1, stopbits=1)
 
+    # color temp initialization
+    # color temp ranges from [2500, 9000] Kelvin
+    #   sunrise -> sunset = 12 hours -> ~541K change per hour
+    timeSet = False
+    decrementTemp = False
+    temp = 5000
+    while not timeSet:
+        # get initial time for temperature
+        hourData = bt.readline().decode('utf-8')
+        print(hourData)
+        try:
+            hour = int(hourData)
+            if hour in range(7, 19):
+                # day range -> increment (7am-7pm)
+                temp = 9000 - ((hour - 7) * 541)
+                decrementTemp = True
+            else:
+                # night range -> decrement
+                if (hour in range(19, 25)):
+                    temp = 2500 + ((hour - 19) * 541)
+                elif (hour in range(0, 7)):
+                    # 5 hours past 
+                    temp = 2500 + ((5 + hour) * 541)
+                decrementTemp = True
+
+            bulb.set_colortemp(temp, 500)
+            timeSet = True
+        except:
+            pass
+        
     while True:
         # polling to check for bluetooth signal
         data = bt.readline().decode('utf-8')
@@ -37,7 +63,22 @@ def main():
                 # high -> 9-10 inches
                 bulb.set_brightness(50000, 500)
         except:
-            pass
+            if "t" in data:
+                # timer alarm -> change color temperature -> 9K every minute
+                if decrementTemp:
+                    temp -= 9
+                else:
+                    temp += 9
+                if temp > 9000:
+                    temp = 9000
+                    decrementTemp = True
+                elif temp < 2500:
+                    temp = 2500
+                    decrementTemp = False
+
+                bulb.set_colortemp(temp, 500)
+
+
         # command = input("type 'b' to change brightness, 'k' to change temperature: ")
         # if (command == 'b'):
         #     brightness = input("enter brightness [0-65535]: ")
@@ -55,11 +96,6 @@ def main():
         # brightness in range [0-65535], duration in ms, rapid = 1 ->
         # bulb.set_brightness() # (brightness, [duration], [rapid])
         # bulb.set_colortemp(kelvin, [duration], [rapid]) # kelvin in range [2500-9000]
-    labels = []
-    for device in devices:
-        labels.append(device.get_label())
-    print("Found Bulbs:")
-    for label in labels:
-        print("  " + str(label))
+
 if __name__ == "__main__":
     main()
