@@ -1,4 +1,5 @@
-# sLight of Hand
+# [sLight of Hand](https://sites.google.com/view/slight-of-hand/)
+
 
 ## Installing dependencies
 
