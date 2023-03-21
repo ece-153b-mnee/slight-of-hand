@@ -7,6 +7,7 @@ Our lightbulb uses the [LIFX LAN Protocol](https://lan.developer.lifx.com/). We 
 To install the modules:
 
 `pip install lifxlan`
+
 `pip install pyserial`
 
 The **lifxlan** utilizes a feature in *bitstring* that is only available in older versions (however the setup.py of the module uses the latest version). To fix this, uninstall the most recent version of bitstring.
