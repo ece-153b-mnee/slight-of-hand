@@ -8,7 +8,7 @@
  
  
 #include "RTC.h"
-
+#include "MY_ILI9341_template.h"
 // Use the 32.768 kHz low-speed external clock as RTC clock source
 
 // Helper macro to convert a value from 2 digit decimal format to BCD format
@@ -70,7 +70,7 @@ void RTC_Init(void) {
 	RTC_Set_Calendar_Date(RTC_WEEKDAY_THURSDAY, 3, RTC_MONTH_FEBRUARY, 23); /* [TODO] These values are stubs - fill in current date */
 	
 	// Configure the Time 
-	RTC_Set_Time(0, 19, 45, 18); /* [TODO] These values are stubs - fill in current time */
+	RTC_Set_Time(1, 10, 37, 22); /* [TODO] These values are stubs - fill in current time */
   
 	// Exit of initialization mode 
 	RTC->ISR &= ~RTC_ISR_INIT;
@@ -174,6 +174,17 @@ void RTC_Enable_Write_Protection(void) {
 	RTC->WPR = 0x69;
 }
 
+
+
+char* RTC_Get_Time_String(void){
+	char strTime[10] = {0};
+
+	sprintf((char*)strTime,"%.2d:%.2d:", 
+		__RTC_CONVERT_BCD2BIN(RTC_TIME_GetHour()), 
+		__RTC_CONVERT_BCD2BIN(RTC_TIME_GetMinute()));
+	return strTime;
+}
+
 uint32_t RTC_TIME_GetHour(void) {
 	// [TODO]
 	return (((RTC->TR & RTC_TR_HT)>>16)) | ((RTC->TR & RTC_TR_HU)>>16);
@@ -232,26 +243,18 @@ void RTC_Set_Alarm(void) {
 	RTC->CR &= ~RTC_CR_ALRAE;
 	RTC->CR &= ~RTC_CR_ALRAIE;
 
-	// Disable alarm B
-	RTC->CR &= ~RTC_CR_ALRBE;
-	RTC->CR &= ~RTC_CR_ALRBIE;
-
 	while (((RTC->ISR & RTC_ISR_ALRAWF) && (RTC->ISR & RTC_ISR_ALRBWF)) == 0); // wait until ready to write
 
 	// alarm a: toggle every 30 sec
-	RTC->ALRMAR &= ~RTC_ALRMAR_MSK1; // idk about this -> pdf says 0 considers values whereas 1 doesn't?
+	RTC->ALRMAR &= ~RTC_ALRMAR_MSK1;
 	RTC->ALRMAR |= RTC_ALRMAR_MSK2;
 	RTC->ALRMAR |= RTC_ALRMAR_MSK3;
 	RTC->ALRMAR |= RTC_ALRMAR_MSK4;
-	RTC->ALRMAR |= (RTC_ALRMAR_MNT_0 |RTC_ALRMAR_MNT_1); // Alarm A interrupts at 30 second minute interupt
-
+	RTC->ALRMAR |= (3UL<<4) | (0UL); // Alarm A interrupts at 30 second fields
 	// Enable alarm A
 	RTC->CR |= RTC_CR_ALRAE;
 	RTC->CR |= RTC_CR_ALRAIE;
 
-	// Enable alarm B
-	RTC->CR |= RTC_CR_ALRBE;
-	RTC->CR |= RTC_CR_ALRBIE;
 
 	// Clear interrupt flag
 	EXTI->PR1 |= EXTI_PR1_PIF18; // clear interrupt flag
@@ -259,10 +262,9 @@ void RTC_Set_Alarm(void) {
 
 	// Clear Flag 
 	RTC->ISR &= ~RTC_ISR_ALRAF;
-	RTC->ISR &= ~RTC_ISR_ALRBF;
 
 	// Reenable write protection
-	// RTC_Enable_Write_Protection();
+	RTC_Enable_Write_Protection();
 }
 
 void RTC_Alarm_Enable(void) {
@@ -289,8 +291,7 @@ void RTC_Alarm_IRQHandler(void) {
 	// if ((EXTI->PR1 & EXTI_PR1_PIF18) != 0) {
 		// LED
 		// Function to set kelvin temperature
-		
-
+		printf("t\n");
 		RTC->ISR &= ~RTC_ISR_ALRAF;
 		RTC->ISR &= ~RTC_ISR_ALRBF;
 	// }

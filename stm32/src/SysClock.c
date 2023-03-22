@@ -1,3 +1,8 @@
+/*
+ * ECE 153B - Winter 2023
+ *
+ * sLight of Hand by Matthew Nguyen & Ethan Epp
+ */
 #include "SysClock.h"
 
 // ******************************************************************************************
@@ -54,22 +59,11 @@ void System_Clock_Init(void){
 	RCC->CFGR &= ~RCC_CFGR_PPRE1; // APB high-speed prescaler (APB1) = 1, HCLK not divided
 	RCC->CFGR &= ~RCC_CFGR_PPRE2; // APB high-speed prescaler (APB2) = 1, HCLK not divided
 	
-	// RCC->PLLCFGR &= ~RCC_PLLCFGR_PLLM;
-	// RCC->PLLCFGR &= ~RCC_PLLCFGR_PLLN;
-	// RCC->PLLCFGR &= ~RCC_PLLCFGR_PLLP; 
-	// RCC->PLLCFGR &= ~RCC_PLLCFGR_PLLQ;	
-	// RCC->PLLCFGR |= RCC_PLLCFGR_PLLPEN; // Enable Main PLL PLLSAI3CLK output enable
-	// RCC->PLLCFGR |= RCC_PLLCFGR_PLLQEN; // Enable Main PLL PLL48M1CLK output enable
-	
 	RCC->CR &= ~RCC_CR_PLLSAI1ON;  // SAI1 PLL enable
 	while ( (RCC->CR & RCC_CR_PLLSAI1ON) == RCC_CR_PLLSAI1ON );
 	
 	// Configure and enable PLLSAI1 clock to generate 11.294MHz 
 	// 8 MHz * 24 / 17 = 11.294MHz
-	// f(VCOSAI1 clock) = f(PLL clock input) *  (PLLSAI1N / PLLM)
-	// PLLSAI1CLK: f(PLLSAI1_P) = f(VCOSAI1 clock) / PLLSAI1P
-	// PLLUSB2CLK: f(PLLSAI1_Q) = f(VCOSAI1 clock) / PLLSAI1Q
-	// PLLADC1CLK: f(PLLSAI1_R) = f(VCOSAI1 clock) / PLLSAI1R
 	RCC->PLLSAI1CFGR &= ~RCC_PLLSAI1CFGR_PLLSAI1N;
 	RCC->PLLSAI1CFGR |= 24U<<8;
 	
@@ -78,25 +72,10 @@ void System_Clock_Init(void){
 	RCC->PLLSAI1CFGR |= RCC_PLLSAI1CFGR_PLLSAI1P;
 	RCC->PLLSAI1CFGR |= RCC_PLLSAI1CFGR_PLLSAI1PEN;
 	
-	// SAI1PLL division factor for PLL48M2CLK (48 MHz clock)
-	// RCC->PLLSAI1CFGR &= ~RCC_PLLSAI1CFGR_PLLSAI1Q;
-	// RCC->PLLSAI1CFGR |= U<<21;
-	// RCC->PLLSAI1CFGR |= RCC_PLLSAI1CFGR_PLLSAI1QEN;
-	
-	// PLLSAI1 division factor for PLLADC1CLK (ADC clock)
-	// 00: PLLSAI1R = 2, 01: PLLSAI1R = 4, 10: PLLSAI1R = 6, 11: PLLSAI1R = 8
-	// RCC->PLLSAI1CFGR &= ~RCC_PLLSAI1CFGR_PLLSAI1R; 
-	// RCC->PLLSAI1CFGR |= U<<25;
-	// RCC->PLLSAI1CFGR |= RCC_PLLSAI1CFGR_PLLSAI1REN;
-	
 	RCC->CR |= RCC_CR_PLLSAI1ON;  // SAI1 PLL enable
 	while ( (RCC->CR & RCC_CR_PLLSAI1ON) == 0);
 	
-	// SAI1 clock source selection
-	// 00: PLLSAI1 "P" clock (PLLSAI1CLK) selected as SAI1 clock
-	// 01: PLLSAI2 "P" clock (PLLSAI2CLK) selected as SAI1 clock
-	// 10: PLL "P" clock (PLLSAI3CLK) selected as SAI1 clock
-	// 11: External input SAI1_EXTCLK selected as SAI1 clock	
+
 	RCC->CCIPR &= ~RCC_CCIPR_SAI1SEL;
 
 	RCC->APB2ENR |= RCC_APB2ENR_SAI1EN;

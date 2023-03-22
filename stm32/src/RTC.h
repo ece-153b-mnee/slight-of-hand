@@ -23,6 +23,7 @@ void RTC_Set_Time(uint32_t Format12_24, uint32_t Hour, uint32_t Minute, uint32_t
 void RTC_Set_Alarm(void);
 void RTC_Alarm_Enable(void);
 void RTC_Alarm_IRQHandler(void);
+char* RTC_Get_Time_String(void);
 
 uint32_t RTC_TIME_GetHour(void);
 uint32_t RTC_TIME_GetMinute(void);

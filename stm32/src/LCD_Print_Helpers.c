@@ -1,5 +1,12 @@
+/*
+ * ECE 153B - Winter 2023
+ *
+ * sLight of Hand by Matthew Nguyen & Ethan Epp
+ */
+
 #include "LCD_Print_Helpers.h"
 
+#define __RTC_CONVERT_BCD2BIN(__VALUE__) (uint8_t)(((uint8_t)((__VALUE__) & (uint8_t)0xF0) >> (uint8_t)0x4) * 10 + ((__VALUE__) & (uint8_t)0x0F))
 
 void LCD_Setup_White(){
 	SPI_GPIO_Init();
@@ -25,11 +32,7 @@ void LCD_Setup_White(){
 	delay(250);
 	ILI9341_printText("Matthew Nguyen",5,310,COLOR_BLACK,COLOR_WHITE,1);
 	
-	// start light brightness w/ 100%
-	uint32_t initialBrightness;
-	initialBrightness = 10;
-	printf("%32u\n", initialBrightness);
-	LCD_Set_Brightness(10);
+
 
 }
 
@@ -58,3 +61,15 @@ void LCD_Set_Brightness(uint32_t distanceIn){
 	}
 }
 
+void LCD_Set_Light(){
+    char str[5];
+    int hour = __RTC_CONVERT_BCD2BIN(RTC_TIME_GetHour());
+    sprintf(str, "%d", hour);
+		strcat(str,"\n");
+		printf(str);
+		// start light brightness w/ 100%
+		uint32_t initialBrightness;
+		initialBrightness = 10;
+		printf("%32u\n", initialBrightness);
+		LCD_Set_Brightness(10);
+}
