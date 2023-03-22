@@ -1,4 +1,6 @@
 # coding=utf-8
+# lightcontrol.py
+# Python control script for sLight of Hand
 from lifxlan import LifxLAN
 import serial
 
@@ -77,25 +79,6 @@ def main():
                     decrementTemp = False
 
                 bulb.set_colortemp(temp, 500)
-
-
-        # command = input("type 'b' to change brightness, 'k' to change temperature: ")
-        # if (command == 'b'):
-        #     brightness = input("enter brightness [0-65535]: ")
-        #     if (int(brightness) < 0) or (int(brightness) > 65535):
-        #         print("outside of range, try again")
-        #     bulb.set_brightness(brightness, 500)
-        # elif (command == 'k'):
-        #     kelvin = input("enter temperature [2500-9000]: ")
-        #     if (int(kelvin) < 2500) or (int(kelvin) > 9000):
-        #         print("outside of range, try again")
-        #     bulb.set_colortemp(kelvin, 500)
-        # else:
-        #     print("invalid command, try again")
-
-        # brightness in range [0-65535], duration in ms, rapid = 1 ->
-        # bulb.set_brightness() # (brightness, [duration], [rapid])
-        # bulb.set_colortemp(kelvin, [duration], [rapid]) # kelvin in range [2500-9000]
 
 if __name__ == "__main__":
     main()
