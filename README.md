@@ -2,6 +2,8 @@
 
 sLight of Hand is a smart desk lamp project that utilizes the STM32L476RG microcontroller. We leverage the board's Real-Time-Clock (RTC) in order to adjust the color temperature (K) of our LIFX light bulb. The user can also easily adjust the brightness of the lamp by intuitively hovering their hand over the HC-SR04 Ultrasonic Sensor, where the brightness can be lowered by lowering your hand -- and increasing brightness by rising your hand. An ILI9341 SPI LCD shows the current time and brightness level of the light.
 
+![Block Diagram of sLight of Hand](https://cdn.discordapp.com/attachments/414698023571161093/1094013789243969637/image.png)
+
 ## Installing dependencies
 
 Our lightbulb uses the [LIFX LAN Protocol](https://lan.developer.lifx.com/). We use the [**lifxlan**](https://github.com/mclarkk/lifxlan) Python 3 module to locally control our light bulb over LAN. We also use the [pySerial](https://pyserial.readthedocs.io/en/latest/) library to receive Bluetooth communication from the device.
